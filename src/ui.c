@@ -274,12 +274,12 @@ static void add_info_row(lv_obj_t * parent, int kind, const char * name, const c
 
     lv_obj_t * label = lv_label_create(line);
     lv_label_set_text(label, name);
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_22, 0);
     lv_obj_set_style_text_color(label, lv_color_hex(COL_MUTED), 0);
 
     lv_obj_t * val = lv_label_create(line);
     lv_label_set_text(val, value);
-    lv_obj_set_style_text_font(val, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(val, &lv_font_montserrat_22, 0);
     lv_obj_set_style_text_color(val, lv_color_hex(COL_TEXT), 0);
     lv_obj_set_style_margin_left(val, 18, 0);
 }
@@ -343,14 +343,15 @@ void ui_init(void)
     lv_obj_set_style_border_color(header, lv_color_hex(COL_EDGE), 0);
     lv_obj_set_style_border_opa(header, LV_OPA_COVER, 0);
 
+    #define HEADER_FONT &lv_font_montserrat_20
     lv_obj_t * brand = hrow(header, 8);
     make_logo(brand);
     lv_obj_t * brand_name = lv_label_create(brand);
     lv_label_set_text(brand_name, "Thermtest");
-    lv_obj_set_style_text_font(brand_name, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(brand_name, HEADER_FONT, 0);
     lv_obj_t * model = lv_label_create(brand);
     lv_label_set_text(model, "MP-1");
-    lv_obj_set_style_text_font(model, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(model, HEADER_FONT, 0);
     lv_obj_set_style_text_color(model, lv_color_hex(COL_DIM), 0);
     lv_obj_set_style_margin_left(model, 14, 0);
 
@@ -358,13 +359,13 @@ void ui_init(void)
     make_ring(ready, 22, 2, lv_color_hex(COL_GREEN), LV_SYMBOL_OK, &lv_font_montserrat_12);
     lv_obj_t * ready_label = lv_label_create(ready);
     lv_label_set_text(ready_label, "System Ready");
-    lv_obj_set_style_text_font(ready_label, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(ready_label, HEADER_FONT, 0);
 
     lv_obj_t * temp = hrow(header, 8);
     make_thermometer(temp, lv_color_hex(COL_ICON));
     lv_obj_t * temp_label = lv_label_create(temp);
     lv_label_set_text(temp_label, "23.4 \xC2\xB0""C");
-    lv_obj_set_style_text_font(temp_label, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(temp_label, HEADER_FONT, 0);
 
     lv_obj_t * clock = hrow(header, 12);
     lv_obj_t * usb = lv_label_create(clock);
@@ -373,7 +374,7 @@ void ui_init(void)
     lv_obj_set_style_text_color(usb, lv_color_hex(COL_DIM), 0);
     lv_obj_t * time_label = lv_label_create(clock);
     lv_label_set_text(time_label, "10:27 AM");
-    lv_obj_set_style_text_font(time_label, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(time_label, HEADER_FONT, 0);
 
     lv_obj_t * body = lv_obj_create(root);
     flat(body);
@@ -395,7 +396,7 @@ void ui_init(void)
 
     lv_obj_t * kicker = lv_label_create(status);
     lv_label_set_text(kicker, "SYSTEM STATUS");
-    lv_obj_set_style_text_font(kicker, &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(kicker, &lv_font_montserrat_20, 0);
     lv_obj_set_style_text_color(kicker, lv_color_hex(COL_MUTED), 0);
     lv_obj_set_style_text_letter_space(kicker, 1, 0);
 
@@ -411,10 +412,10 @@ void ui_init(void)
     lv_obj_set_style_pad_row(words, 2, 0);
     lv_obj_t * idle = lv_label_create(words);
     lv_label_set_text(idle, "IDLE");
-    lv_obj_set_style_text_font(idle, &lv_font_montserrat_44, 0);
+    lv_obj_set_style_text_font(idle, &lv_font_montserrat_48, 0);
     lv_obj_t * idle_sub = lv_label_create(words);
     lv_label_set_text(idle_sub, "System ready.");
-    lv_obj_set_style_text_font(idle_sub, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_font(idle_sub, &lv_font_montserrat_30, 0);
     lv_obj_set_style_text_color(idle_sub, lv_color_hex(COL_MUTED), 0);
 
     lv_obj_t * spacer = lv_obj_create(status);
@@ -473,11 +474,11 @@ void ui_init(void)
 
         lv_obj_t * title = lv_label_create(text);
         lv_label_set_text(title, names[i]);
-        lv_obj_set_style_text_font(title, &lv_font_montserrat_18, 0);
+        lv_obj_set_style_text_font(title, &lv_font_montserrat_24, 0);
 
         lv_obj_t * kind = lv_label_create(text);
         lv_label_set_text(kind, kinds[i]);
-        lv_obj_set_style_text_font(kind, &lv_font_montserrat_16, 0);
+        lv_obj_set_style_text_font(kind, &lv_font_montserrat_22, 0);
         lv_obj_set_style_text_color(kind, lv_color_hex(COL_MUTED), 0);
 
         lv_obj_t * chevron = lv_label_create(card);

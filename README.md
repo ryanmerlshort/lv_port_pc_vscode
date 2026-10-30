@@ -2,20 +2,20 @@
 
 [LVGL](https://github.com/lvgl/lvgl) is written mainly for microcontrollers and embedded systems, however you can run the library **on your PC** as well without any embedded hardware. The code written on PC can be simply copied when your are using an embedded system.
 
-This project is pre-configured for VSCode and should work work on Windows, Linux and MacOs as well. FreeRTOS is also included and can be optionally enabled to better simulate embedded system's behavior. 
+This project is pre-configured for VSCode and should work work on Windows, Linux and MacOs as well. FreeRTOS is also included and can be optionally enabled to better simulate embedded system's behavior.
 
 ## Get started
 
 ### Install SDL and the build tools
 
 - **Windows (vcpkg):** `vcpkg install sdl2`  (`vcpkg` can be installed from [https://github.com/microsoft/vcpkg](https://github.com/microsoft/vcpkg)) Also install either MinGW or another compiler and `cmake`.
-- **macOS (Homebrew):** `brew install sdl2 cmake make`  
-- **Linux:**  
-  - **Debian/Ubuntu:** `sudo apt install build-essential cmake libsdl2-dev`  
-  - **Arch:** `sudo pacman -S base-devel cmake sdl2`  
-  - **Fedora:** `sudo dnf install @development-tools cmake SDL2-devel`  
+- **macOS (Homebrew):** `brew install sdl2 cmake make`
+- **Linux:**
+  - **Debian/Ubuntu:** `sudo apt install build-essential cmake libsdl2-dev`
+  - **Arch:** `sudo pacman -S base-devel cmake sdl2`
+  - **Fedora:** `sudo dnf install @development-tools cmake SDL2-devel`
 - **Manual Installation of SDL:** Download from [SDL’s website](https://github.com/libsdl-org/SDL/releases) and place headers/libraries in your project.
-- **Verify Installation:** `sdl2-config --version`, `cmake --version`, `gcc --version`, `g++ --version` (should return the installed version).  
+- **Verify Installation:** `sdl2-config --version`, `cmake --version`, `gcc --version`, `g++ --version` (should return the installed version).
 
 ### Get the PC project
 
@@ -70,7 +70,7 @@ To correctly configure the project, the RTOS (Real-Time Operating System) requir
 This configuration ensures that the SDL window is displayed in a timely manner. If this value is reduced, it may cause significant delays in the SDL window's appearance. If the allocated heap memory is too small, the window may fail to appear altogether.
 Therefore, it is crucial to allocate sufficient heap memory to ensure smooth execution and debugging experience.
 
-### Enable FreeRTOS 
+### Enable FreeRTOS
 To enable the rtos part of this project select in lv_conf.h `#define LV_USE_OS   LV_OS_NONE` to `#define LV_USE_OS  LV_OS_FREERTOS`
 Additionaly you have to enable the compilation of all FreeRTOS Files by turning on the `option(USE_FREERTOS "Enable FreeRTOS" OFF)` in the CMakeLists.txt file or
 by enabling the same flag from the command line when bootstrapping `cmake`:
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
   /* - lv_demo_stress(); */
   /* - lv_example_label_1(); */
   /* - etc. */
-  lv_demo_widgets(); 
+  lv_demo_widgets();
 
   while(1) {
       /* ... */
@@ -139,11 +139,11 @@ make
 sudo make install
 ```
 ### (RT)OS support
-Works with any OS like pthred, Windows, FreeRTOS, etc. It has build in support for FreeRTOS. 
+Works with any OS like pthred, Windows, FreeRTOS, etc. It has build in support for FreeRTOS.
 
 ## Test
-This project is configured for [VSCode](https://code.visualstudio.com) and is tested on: 
-- Ubuntu Linux 
+This project is configured for [VSCode](https://code.visualstudio.com) and is tested on:
+- Ubuntu Linux
 - Windows WSL (Ubuntu Linux)
 
 It requires a working version of GCC, GDB and make in your path.
@@ -180,10 +180,15 @@ In your main.c, include the UI header from your LVGL Pro project and replace the
 int main(void) {
 
     /*Initialization code for LVGL*/
-    
+
     /* Initialize the LVGL Pro UI */
     ui_init("<path-to-lvgl-pro-project>");
-    
+
     /* ... rest of your application ...*/
 }
 ```
+
+Windows Build
+cmake -S . -B build -G Ninja
+cmake --build build
+.\bin\main.exe

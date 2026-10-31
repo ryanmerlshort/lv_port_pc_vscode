@@ -14,11 +14,12 @@
 #define COL_FAINT     0x8A8A90
 #define COL_ICON      0xC8C8CC
 #define COL_BLUE      0x7EA8C6
+#define COL_YELLOW    0xF0C400
+#define COL_PALE_BLUE 0xA8D0E8
 
 static lv_obj_t * port_cards[4];
 static lv_obj_t * port_num[4];
 static lv_obj_t * port_name[4];
-static lv_obj_t * port_chevron[4];
 static int selected_port;
 
 static void flat(lv_obj_t * obj)
@@ -165,44 +166,6 @@ static lv_obj_t * make_nodes(lv_obj_t * parent, lv_color_t color)
     return box;
 }
 
-static lv_obj_t * make_bars(lv_obj_t * parent, lv_color_t color)
-{
-    lv_obj_t * box = icon_box(parent, 20, 16);
-    static const int heights[3] = {7, 14, 10};
-    for(int i = 0; i < 3; i++) {
-        lv_obj_t * bar = lv_obj_create(box);
-        flat(bar);
-        lv_obj_set_size(bar, 4, heights[i]);
-        lv_obj_align(bar, LV_ALIGN_BOTTOM_LEFT, i * 7, 0);
-        lv_obj_set_style_bg_color(bar, color, 0);
-        lv_obj_set_style_bg_opa(bar, LV_OPA_COVER, 0);
-        lv_obj_set_style_radius(bar, 1, 0);
-    }
-    return box;
-}
-
-static lv_obj_t * make_sliders(lv_obj_t * parent, lv_color_t color)
-{
-    lv_obj_t * box = icon_box(parent, 24, 16);
-
-    lv_obj_t * knob_top = lv_obj_create(box);
-    flat(knob_top);
-    lv_obj_set_size(knob_top, 8, 8);
-    lv_obj_set_pos(knob_top, 0, 0);
-    lv_obj_set_style_radius(knob_top, LV_RADIUS_CIRCLE, 0);
-    stroke(knob_top, color, 2);
-    filled(box, 10, 3, 14, 2, color);
-
-    filled(box, 0, 11, 12, 2, color);
-    lv_obj_t * knob_bot = lv_obj_create(box);
-    flat(knob_bot);
-    lv_obj_set_size(knob_bot, 8, 8);
-    lv_obj_set_pos(knob_bot, 14, 8);
-    lv_obj_set_style_radius(knob_bot, LV_RADIUS_CIRCLE, 0);
-    stroke(knob_bot, color, 2);
-    return box;
-}
-
 static void round_rect_point(float x, float y, float w, float h, float r, float dist, float * ox, float * oy)
 {
     const float pi = 3.14159265f;
@@ -338,10 +301,8 @@ static void style_method(int index, bool selected)
     }
 
     lv_color_t text = lv_color_hex((empty && !selected) ? COL_FAINT : COL_TEXT);
-    lv_color_t chev = lv_color_hex((empty && !selected) ? COL_FAINT : COL_MUTED);
     lv_obj_set_style_text_color(port_num[index], text, 0);
     lv_obj_set_style_text_color(port_name[index], text, 0);
-    lv_obj_set_style_text_color(port_chevron[index], chev, 0);
 }
 
 static void select_port(int index)
@@ -388,27 +349,6 @@ static void add_info_row(lv_obj_t * parent, int kind, const char * name, const c
         lv_obj_set_style_text_color(extra, lv_color_hex(COL_MUTED), 0);
         lv_obj_set_style_margin_left(extra, -4, 0);
     }
-}
-
-static lv_obj_t * nav_item(lv_obj_t * parent, int kind, const char * text)
-{
-    lv_color_t color = lv_color_hex(COL_ICON);
-    lv_obj_t * col = lv_obj_create(parent);
-    flat(col);
-    lv_obj_set_size(col, 110, LV_SIZE_CONTENT);
-    lv_obj_set_flex_flow(col, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(col, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_pad_row(col, 6, 0);
-
-    if(kind == 0) make_sliders(col, color);
-    else if(kind == 1) make_ring(col, 24, 2, color, "i", &lv_font_montserrat_14);
-    else make_bars(col, color);
-
-    lv_obj_t * label = lv_label_create(col);
-    lv_label_set_text(label, text);
-    lv_obj_set_style_text_font(label, &lv_font_montserrat_14, 0);
-    lv_obj_set_style_text_color(label, color, 0);
-    return col;
 }
 
 void ui_init(void)
@@ -462,14 +402,10 @@ void ui_init(void)
     lv_label_set_text(temp_label, "23.4 \xC2\xB0""C");
     lv_obj_set_style_text_font(temp_label, &lv_font_montserrat_22, 0);
 
-    lv_obj_t * clock = hrow(status_row, 8);
-    lv_obj_t * bolt = lv_label_create(clock);
-    lv_label_set_text(bolt, LV_SYMBOL_CHARGE);
-    lv_obj_set_style_text_font(bolt, &lv_font_montserrat_18, 0);
-    lv_obj_set_style_text_color(bolt, lv_color_hex(COL_ICON), 0);
-    lv_obj_t * time_label = lv_label_create(clock);
-    lv_label_set_text(time_label, "10:27 AM");
-    lv_obj_set_style_text_font(time_label, &lv_font_montserrat_22, 0);
+    lv_obj_t * gear = lv_label_create(status_row);
+    lv_label_set_text(gear, LV_SYMBOL_SETTINGS);
+    lv_obj_set_style_text_font(gear, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_color(gear, lv_color_hex(COL_ICON), 0);
 
     lv_obj_t * body = lv_obj_create(root);
     flat(body);
@@ -515,7 +451,7 @@ void ui_init(void)
     lv_obj_set_style_text_font(idle, &lv_font_montserrat_44, 0);
     lv_obj_t * idle_sub = lv_label_create(words);
     lv_label_set_text(idle_sub, "System ready.");
-    lv_obj_set_style_text_font(idle_sub, &lv_font_montserrat_24, 0);
+    lv_obj_set_style_text_font(idle_sub, &lv_font_montserrat_28, 0);
     lv_obj_set_style_text_color(idle_sub, lv_color_hex(COL_MUTED), 0);
 
     lv_obj_t * spacer = lv_obj_create(status);
@@ -536,11 +472,13 @@ void ui_init(void)
     flat(info_gap);
     lv_obj_set_height(info_gap, 12);
     lv_obj_set_width(info_gap, lv_pct(100));
-    add_info_row(status, 1, "Available ports:", "4", "(Sensor Switch)");
+    add_info_row(status, 1, "Available ports:", "4", "");
     lv_obj_set_style_margin_bottom(lv_obj_get_child(status, -1), 4, 0);
 
     static const char * numbers[] = {"1", "2", "3", "4"};
     static const char * names[] = {"TPS", "MTPS", "THW", "Empty"};
+    static const char * statuses[] = {"Active", "Monitoring", "", ""};
+    static const uint32_t status_colors[] = {COL_YELLOW, COL_BLUE, COL_TEXT, COL_TEXT};
 
     lv_obj_t * ports = lv_obj_create(body);
     flat(ports);
@@ -565,38 +503,21 @@ void ui_init(void)
 
         lv_obj_t * num = lv_label_create(card);
         lv_label_set_text(num, numbers[i]);
-        lv_obj_set_width(num, 28);
-        lv_obj_set_style_text_font(num, &lv_font_montserrat_24, 0);
+        lv_obj_set_width(num, 20);
+        lv_obj_set_style_text_font(num, &lv_font_montserrat_28, 0);
         lv_obj_set_style_text_align(num, LV_TEXT_ALIGN_LEFT, 0);
         port_num[i] = num;
 
         lv_obj_t * name = lv_label_create(card);
         lv_label_set_text(name, names[i]);
-        lv_obj_set_style_text_font(name, &lv_font_montserrat_22, 0);
+        lv_obj_set_style_text_font(name, &lv_font_montserrat_28, 0);
         lv_obj_set_flex_grow(name, 1);
         port_name[i] = name;
 
-        lv_obj_t * chevron = lv_label_create(card);
-        lv_label_set_text(chevron, LV_SYMBOL_RIGHT);
-        lv_obj_set_style_text_font(chevron, &lv_font_montserrat_18, 0);
-        port_chevron[i] = chevron;
+        lv_obj_t * status = lv_label_create(card);
+        lv_label_set_text(status, statuses[i]);
+        lv_obj_set_style_text_font(status, &lv_font_montserrat_18, 0);
+        lv_obj_set_style_text_color(status, lv_color_hex(status_colors[i]), 0);
     }
     select_port(0);
-
-    lv_obj_t * footer = lv_obj_create(root);
-    flat(footer);
-    lv_obj_set_style_bg_color(footer, lv_color_hex(COL_CARD), 0);
-    lv_obj_set_style_bg_opa(footer, LV_OPA_COVER, 0);
-    lv_obj_set_width(footer, lv_pct(100));
-    lv_obj_set_height(footer, 72);
-    lv_obj_set_flex_flow(footer, LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(footer, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_border_side(footer, LV_BORDER_SIDE_TOP, 0);
-    lv_obj_set_style_border_width(footer, 1, 0);
-    lv_obj_set_style_border_color(footer, lv_color_hex(COL_LINE_SOFT), 0);
-    lv_obj_set_style_border_opa(footer, LV_OPA_COVER, 0);
-
-    nav_item(footer, 0, "Settings");
-    nav_item(footer, 1, "Info");
-    nav_item(footer, 2, "Data");
 }

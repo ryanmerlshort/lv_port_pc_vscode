@@ -20,7 +20,10 @@
 static lv_obj_t * port_cards[4];
 static lv_obj_t * port_num[4];
 static lv_obj_t * port_name[4];
+static lv_obj_t * status_page;
+static lv_obj_t * test_page;
 static int selected_port;
+static bool showing_test;
 
 static void flat(lv_obj_t * obj)
 {
@@ -351,6 +354,117 @@ static void add_info_row(lv_obj_t * parent, int kind, const char * name, const c
     }
 }
 
+static lv_obj_t * page_column(lv_obj_t * parent)
+{
+    lv_obj_t * page = lv_obj_create(parent);
+    flat(page);
+    lv_obj_set_width(page, lv_pct(100));
+    lv_obj_set_flex_grow(page, 1);
+    lv_obj_set_height(page, lv_pct(100));
+    lv_obj_set_flex_flow(page, LV_FLEX_FLOW_COLUMN);
+    return page;
+}
+
+static void show_panel_page(bool test)
+{
+    showing_test = test;
+    lv_obj_set_hidden(status_page, test);
+    lv_obj_set_hidden(test_page, !test);
+}
+
+static void panel_clicked(lv_event_t * e)
+{
+    LV_UNUSED(e);
+    show_panel_page(!showing_test);
+}
+
+static lv_obj_t * add_value_row(lv_obj_t * parent, const char * name, const char * value, uint32_t value_color)
+{
+    lv_obj_t * line = lv_obj_create(parent);
+    flat(line);
+    lv_obj_set_width(line, lv_pct(100));
+    lv_obj_set_height(line, LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(line, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(line, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(line, 14, 0);
+
+    lv_obj_t * label = lv_label_create(line);
+    lv_label_set_text(label, name);
+    lv_obj_set_style_text_font(label, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_color(label, lv_color_hex(COL_MUTED), 0);
+
+    lv_obj_t * val = lv_label_create(line);
+    lv_label_set_text(val, value);
+    lv_obj_set_style_text_font(val, &lv_font_montserrat_22, 0);
+    lv_obj_set_style_text_color(val, lv_color_hex(value_color), 0);
+    return line;
+}
+
+static void build_test_page(lv_obj_t * page)
+{
+    lv_obj_t * title = lv_label_create(page);
+    lv_label_set_text(title, "Transient Test");
+    lv_obj_set_style_text_font(title, &lv_font_montserrat_44, 0);
+    lv_obj_set_style_text_color(title, lv_color_hex(COL_TEXT), 0);
+
+    lv_obj_t * stage = add_value_row(page, "Stage:", "Heating", COL_YELLOW);
+    lv_obj_set_style_margin_top(stage, 18, 0);
+
+    lv_obj_t * elapsed = add_value_row(page, "Elapsed:", "03:42", COL_TEXT);
+    lv_obj_set_style_margin_top(elapsed, 10, 0);
+
+    lv_obj_t * progress = lv_obj_create(page);
+    flat(progress);
+    lv_obj_set_width(progress, lv_pct(100));
+    lv_obj_set_height(progress, LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(progress, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(progress, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(progress, 14, 0);
+    lv_obj_set_style_margin_top(progress, 28, 0);
+
+    lv_obj_t * bar = lv_bar_create(progress);
+    lv_obj_set_height(bar, 16);
+    lv_obj_set_flex_grow(bar, 1);
+    lv_obj_set_clickable(bar, false);
+    lv_bar_set_range(bar, 0, 100);
+    lv_bar_set_value(bar, 46, LV_ANIM_OFF);
+    lv_obj_set_style_bg_color(bar, lv_color_hex(0x4A4A50), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(bar, LV_OPA_COVER, LV_PART_MAIN);
+    lv_obj_set_style_radius(bar, LV_RADIUS_CIRCLE, LV_PART_MAIN);
+    lv_obj_set_style_pad_all(bar, 0, LV_PART_MAIN);
+    lv_obj_set_style_border_width(bar, 0, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(bar, lv_color_hex(0x3C9AE6), LV_PART_INDICATOR);
+    lv_obj_set_style_bg_opa(bar, LV_OPA_COVER, LV_PART_INDICATOR);
+    lv_obj_set_style_radius(bar, LV_RADIUS_CIRCLE, LV_PART_INDICATOR);
+
+    lv_obj_t * percent = lv_label_create(progress);
+    lv_label_set_text(percent, "46%");
+    lv_obj_set_style_text_font(percent, &lv_font_montserrat_20, 0);
+    lv_obj_set_style_text_color(percent, lv_color_hex(COL_TEXT), 0);
+
+    lv_obj_t * note = lv_obj_create(page);
+    flat(note);
+    lv_obj_set_width(note, lv_pct(100));
+    lv_obj_set_height(note, LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(note, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(note, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_style_pad_column(note, 12, 0);
+    lv_obj_set_style_pad_all(note, 14, 0);
+    lv_obj_set_style_margin_top(note, 18, 0);
+    lv_obj_set_style_bg_color(note, lv_color_hex(0x161618), 0);
+    lv_obj_set_style_bg_opa(note, LV_OPA_COVER, 0);
+    lv_obj_set_style_radius(note, 12, 0);
+    lv_obj_set_style_border_width(note, 1, 0);
+    lv_obj_set_style_border_color(note, lv_color_hex(COL_LINE), 0);
+    lv_obj_set_style_border_opa(note, LV_OPA_COVER, 0);
+    make_ring(note, 28, 2, lv_color_hex(COL_BLUE), "i", &lv_font_montserrat_16);
+
+    lv_obj_t * note_text = lv_label_create(note);
+    lv_label_set_text(note_text, "Cooling will begin automatically\nafter test.");
+    lv_obj_set_style_text_font(note_text, &lv_font_montserrat_18, 0);
+    lv_obj_set_style_text_color(note_text, lv_color_hex(COL_ICON), 0);
+}
+
 void ui_init(void)
 {
     lv_obj_t * screen = lv_screen_active();
@@ -429,14 +543,17 @@ void ui_init(void)
     lv_obj_set_flex_flow(status, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_style_pad_all(status, 20, 0);
     lv_obj_set_style_pad_row(status, 0, 0);
+    lv_obj_set_clickable(status, true);
+    lv_obj_add_event_cb(status, panel_clicked, LV_EVENT_CLICKED, NULL);
 
-    lv_obj_t * kicker = lv_label_create(status);
+    status_page = page_column(status);
+    lv_obj_t * kicker = lv_label_create(status_page);
     lv_label_set_text(kicker, "SYSTEM STATUS");
     lv_obj_set_style_text_font(kicker, &lv_font_montserrat_20, 0);
     lv_obj_set_style_text_color(kicker, lv_color_hex(COL_MUTED), 0);
     lv_obj_set_style_text_letter_space(kicker, 1, 0);
 
-    lv_obj_t * hero = hrow(status, 16);
+    lv_obj_t * hero = hrow(status_page, 16);
     lv_obj_set_style_margin_top(hero, 14, 0);
     make_ring(hero, 78, 3, lv_color_hex(COL_BLUE), LV_SYMBOL_OK, &lv_font_montserrat_32);
 
@@ -454,12 +571,12 @@ void ui_init(void)
     lv_obj_set_style_text_font(idle_sub, &lv_font_montserrat_28, 0);
     lv_obj_set_style_text_color(idle_sub, lv_color_hex(COL_MUTED), 0);
 
-    lv_obj_t * spacer = lv_obj_create(status);
+    lv_obj_t * spacer = lv_obj_create(status_page);
     flat(spacer);
     lv_obj_set_width(spacer, lv_pct(100));
     lv_obj_set_flex_grow(spacer, 1);
 
-    lv_obj_t * rule = lv_obj_create(status);
+    lv_obj_t * rule = lv_obj_create(status_page);
     flat(rule);
     lv_obj_set_width(rule, lv_pct(100));
     lv_obj_set_height(rule, 1);
@@ -467,13 +584,17 @@ void ui_init(void)
     lv_obj_set_style_bg_opa(rule, LV_OPA_20, 0);
     lv_obj_set_style_margin_bottom(rule, 16, 0);
 
-    add_info_row(status, 0, "Instrument:", "MP-S", NULL);
-    lv_obj_t * info_gap = lv_obj_create(status);
+    add_info_row(status_page, 0, "Instrument:", "MP-S", NULL);
+    lv_obj_t * info_gap = lv_obj_create(status_page);
     flat(info_gap);
     lv_obj_set_height(info_gap, 12);
     lv_obj_set_width(info_gap, lv_pct(100));
-    add_info_row(status, 1, "Available ports:", "4", "");
-    lv_obj_set_style_margin_bottom(lv_obj_get_child(status, -1), 4, 0);
+    add_info_row(status_page, 1, "Available ports:", "4", "");
+    lv_obj_set_style_margin_bottom(lv_obj_get_child(status_page, -1), 4, 0);
+
+    test_page = page_column(status);
+    build_test_page(test_page);
+    show_panel_page(false);
 
     static const char * numbers[] = {"1", "2", "3", "4"};
     static const char * names[] = {"TPS", "MTPS", "THW", "Empty"};

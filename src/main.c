@@ -23,7 +23,7 @@
 #include <SDL.h>
 
 #include "hal/hal.h"
-#include "ui.h"
+#include "lv_ui.h"
 
 /*********************
  *      DEFINES
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   /*Initialize the HAL (display, input devices, tick) for LVGL*/
   sdl_hal_init(800, 480);
 
-  ui_init();
+  lv_ui_init();
 
   while(1) {
     /* Periodically call the lv_task handler.

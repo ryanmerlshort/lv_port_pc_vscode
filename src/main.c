@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   /*Initialize the HAL (display, input devices, tick) for LVGL*/
   sdl_hal_init(800, 480);
 
-  lv_ui_init();
+  lv_ui_init(4);
 
   while(1) {
     /* Periodically call the lv_task handler.

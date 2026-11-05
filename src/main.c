@@ -63,6 +63,12 @@ int main(int argc, char **argv)
   sdl_hal_init(800, 480);
 
   lv_ui_init(4);
+  UpdateScreenPort(1, SCREEN_PORT_FIELD_NAME, UI_COLOR_TEXT_WHITE, "TPS");
+  UpdateScreenPort(2, SCREEN_PORT_FIELD_NAME, UI_COLOR_TEXT_WHITE, "MTPS");
+  UpdateScreenPort(3, SCREEN_PORT_FIELD_NAME, UI_COLOR_TEXT_WHITE, "THW");
+  UpdateScreenPort(4, SCREEN_PORT_FIELD_NAME, UI_COLOR_TEXT_WHITE, "Empty");
+  UpdateScreenPort(1, SCREEN_PORT_FIELD_STATUS, UI_COLOR_YELLOW, "Active");
+  UpdateScreenPort(2, SCREEN_PORT_FIELD_STATUS, UI_COLOR_BLUE, "Monitoring");
 
   while(1) {
     /* Periodically call the lv_task handler.

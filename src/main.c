@@ -61,9 +61,11 @@ int main(int argc, char **argv)
 
   /*Initialize the HAL (display, input devices, tick) for LVGL*/
   sdl_hal_init(800, 480);
+  // sdl_hal_init(480, 272);
 
-  lv_ui_init(4);
-
+  // lv_ui_init(4, LCD_RESOLUTION_480x272);
+  lv_ui_init(4, LCD_RESOLUTION_800x480);
+  UpdateScreenPanelSelected(SCREEN_PANEL_TEST);
   UpdateScreenPort(1, SCREEN_PORT_FIELD_NAME, SCREEN_COLOR_WHITE, "TPS");
   UpdateScreenPort(2, SCREEN_PORT_FIELD_NAME, SCREEN_COLOR_WHITE, "MTPS");
   UpdateScreenPort(3, SCREEN_PORT_FIELD_NAME, SCREEN_COLOR_WHITE, "THW");
@@ -71,10 +73,12 @@ int main(int argc, char **argv)
   UpdateScreenPort(1, SCREEN_PORT_FIELD_STATUS, SCREEN_COLOR_YELLOW, "Active");
   UpdateScreenPort(2, SCREEN_PORT_FIELD_STATUS, SCREEN_COLOR_BLUE, "Stabilizing");
   UpdateScreenPort(3, SCREEN_PORT_FIELD_STATUS, SCREEN_COLOR_WHITE, "Idle");
-  UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_TITLE, SCREEN_COLOR_WHITE, "Transient Test");
+  UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_TITLE, SCREEN_COLOR_WHITE, "Test (2 / 5)");
+  // UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_TITLE, SCREEN_COLOR_WHITE, "Stabilizing");
+  UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_TEMP, SCREEN_COLOR_RED, "200.9");
   UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_STAGE, SCREEN_COLOR_YELLOW, "Heating");
-  UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_INFO, SCREEN_COLOR_WHITE, "Cooling will begin\nautomatically after\ntest.");
-  UpdateScreenHeader(SCREEN_HEADER_FIELD_TEMP, SCREEN_COLOR_WHITE, "23.4");
+  UpdateScreenElapsed(SCREEN_ELAPSED_START);
+  UpdateScreenPanel(SCREEN_PANEL_TEST, SCREEN_TEST_PANEL_FIELD_INFO, SCREEN_COLOR_WHITE, "Cooling will begin automatically after test.");
   UpdateScreenPanelInfo(true);
   UpdateScreenPanelProgressShow(true);
   UpdateScreenPanelProgressAuto(0, 100, 10000);
